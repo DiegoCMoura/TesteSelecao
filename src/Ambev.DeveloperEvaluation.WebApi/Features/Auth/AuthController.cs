@@ -10,23 +10,16 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Auth;
 /// <summary>
 /// Controller for authentication operations
 /// </summary>
+/// <remarks>
+/// Initializes a new instance of AuthController
+/// </remarks>
+/// <param name="mediator">The mediator instance</param>
+/// <param name="mapper">The AutoMapper instance</param>
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController : BaseController
-{
-    private readonly IMediator _mediator;
-    private readonly IMapper _mapper;
-
-    /// <summary>
-    /// Initializes a new instance of AuthController
-    /// </summary>
-    /// <param name="mediator">The mediator instance</param>
-    /// <param name="mapper">The AutoMapper instance</param>
-    public AuthController(IMediator mediator, IMapper mapper)
-    {
-        _mediator = mediator;
-        _mapper = mapper;
-    }
+public class AuthController(IMediator mediator, IMapper mapper) : BaseController {
+    private readonly IMediator _mediator = mediator;
+    private readonly IMapper _mapper = mapper;
 
     /// <summary>
     /// Authenticates a user with their credentials
@@ -49,8 +42,7 @@ public class AuthController : BaseController
         var command = _mapper.Map<AuthenticateUserCommand>(request);
         var response = await _mediator.Send(command, cancellationToken);
 
-        return Ok(new ApiResponseWithData<AuthenticateUserResponse>
-        {
+        return Ok(new ApiResponseWithData<AuthenticateUserResponse> {
             Success = true,
             Message = "User authenticated successfully",
             Data = _mapper.Map<AuthenticateUserResponse>(response)

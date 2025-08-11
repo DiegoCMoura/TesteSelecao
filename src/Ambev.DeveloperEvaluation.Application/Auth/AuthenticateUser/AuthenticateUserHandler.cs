@@ -1,5 +1,3 @@
-using System.Threading;
-using System.Threading.Tasks;
 using Ambev.DeveloperEvaluation.Common.Security;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using Ambev.DeveloperEvaluation.Domain.Specifications;
@@ -7,21 +5,13 @@ using MediatR;
 
 namespace Ambev.DeveloperEvaluation.Application.Auth.AuthenticateUser
 {
-    public class AuthenticateUserHandler : IRequestHandler<AuthenticateUserCommand, AuthenticateUserResult>
-    {
-        private readonly IUserRepository _userRepository;
-        private readonly IPasswordHasher _passwordHasher;
-        private readonly IJwtTokenGenerator _jwtTokenGenerator;
-
-        public AuthenticateUserHandler(
-            IUserRepository userRepository,
-            IPasswordHasher passwordHasher,
-            IJwtTokenGenerator jwtTokenGenerator)
-        {
-            _userRepository = userRepository;
-            _passwordHasher = passwordHasher;
-            _jwtTokenGenerator = jwtTokenGenerator;
-        }
+    public class AuthenticateUserHandler(
+        IUserRepository userRepository,
+        IPasswordHasher passwordHasher,
+        IJwtTokenGenerator jwtTokenGenerator) : IRequestHandler<AuthenticateUserCommand, AuthenticateUserResult> {
+        private readonly IUserRepository _userRepository = userRepository;
+        private readonly IPasswordHasher _passwordHasher = passwordHasher;
+        private readonly IJwtTokenGenerator _jwtTokenGenerator = jwtTokenGenerator;
 
         public async Task<AuthenticateUserResult> Handle(AuthenticateUserCommand request, CancellationToken cancellationToken)
         {
@@ -40,8 +30,7 @@ namespace Ambev.DeveloperEvaluation.Application.Auth.AuthenticateUser
 
             var token = _jwtTokenGenerator.GenerateToken(user);
 
-            return new AuthenticateUserResult
-            {
+            return new AuthenticateUserResult {
                 Token = token,
                 Email = user.Email,
                 Name = user.Username,
